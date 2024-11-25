@@ -3,8 +3,10 @@ import { PeopleSelect } from '../../../../models/people';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const fetchPeople = async () => {
-  const res = await fetch('http://localhost:8787');
+  const res = await fetch(apiUrl);
   if (!res.ok) throw new Error('Failed to fetch posts');
 
   const people = (await res.json()) as PeopleSelect[];
