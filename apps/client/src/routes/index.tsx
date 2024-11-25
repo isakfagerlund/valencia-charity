@@ -1,10 +1,12 @@
-import * as React from 'react';
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
+import { PeopleSelect } from '../../../../models/people';
 
 const fetchPeople = async () => {
   const res = await fetch('http://localhost:8787');
   if (!res.ok) throw new Error('Failed to fetch posts');
-  return res.json();
+
+  const people = (await res.json()) as PeopleSelect[];
+  return people;
 };
 
 export const Route = createFileRoute('/')({
@@ -18,7 +20,13 @@ function HomeComponent() {
   return (
     <div className="p-2">
       <h3>Welcome Home!</h3>
-      {data.map((person: unknown) => JSON.stringify(person))}
+      {data.map((person) => (
+        <div key={person.id}>
+          <p>{person.id}</p>
+          <p>{person.name}</p>
+          <p>{person.description}</p>
+        </div>
+      ))}
     </div>
   );
 }
