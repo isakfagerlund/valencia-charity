@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { db } from './src/db/db';
 import { people } from './src/db/schema';
 
@@ -8,6 +9,7 @@ type Bindings = {
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
+app.use('/*', cors());
 
 app.get('/', async (c) => {
   console.log();
