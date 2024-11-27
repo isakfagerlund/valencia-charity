@@ -8,7 +8,7 @@ import { PeopleSelect } from '../../../../models/people';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const fetchPerson = async (id: string) => {
-  const res = await fetch(`${apiUrl}/people/${id}`);
+  const res = await fetch(`${apiUrl}people/${id}`);
   if (!res.ok) throw notFound();
 
   const person = (await res.json()) as PeopleSelect;
