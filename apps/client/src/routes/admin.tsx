@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { NewPeopleForm } from '@/components/NewPeopleForm';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/admin')({
@@ -8,7 +8,7 @@ export const Route = createFileRoute('/admin')({
 function RouteComponent() {
   return (
     <div>
-      <p>Here we can add and edit People</p>
+      <NewPeopleForm />
     </div>
   );
 }

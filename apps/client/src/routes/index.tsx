@@ -1,8 +1,7 @@
 import { createFileRoute, Link, useLoaderData } from '@tanstack/react-router';
 import { PeopleSelect } from '../../../../models/people';
 import { Card } from '@/components/ui/card';
-
-const apiUrl = import.meta.env.VITE_API_URL;
+import { apiUrl } from '@/lib/constants';
 
 const fetchPeople = async () => {
   const res = await fetch(`${apiUrl}people`);

@@ -23,6 +23,9 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.1",
+    "@hookform/resolvers": "^3.9.1",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@tanstack/react-router": "^1.82.8",
     "@tanstack/router-devtools": "^1.82.8",
@@ -31,6 +34,7 @@
     "lucide-react": "^0.461.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.2",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"

@@ -1,19 +1,11 @@
 import {
   createFileRoute,
+  Link,
   notFound,
   useLoaderData,
 } from '@tanstack/react-router';
-import { PeopleSelect } from '../../../../models/people';
-
-const apiUrl = import.meta.env.VITE_API_URL;
-
-const fetchPerson = async (id: string) => {
-  const res = await fetch(`${apiUrl}people/${id}`);
-  if (!res.ok) throw notFound();
-
-  const person = (await res.json()) as PeopleSelect;
-  return person;
-};
+import { fetchPerson } from '@/lib/fetchPerson';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/people/$id')({
   component: RouteComponent,
@@ -28,6 +20,9 @@ function RouteComponent() {
       <p>{data.id}</p>
       <p>{data.name}</p>
       <p>{data.description}</p>
+      <Link to="/people/$id/edit" params={{ id: data.id.toString() }}>
+        <Button>Edit</Button>
+      </Link>
     </div>
   );
 }

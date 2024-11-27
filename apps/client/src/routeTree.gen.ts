@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AdminImport } from './routes/admin'
 import { Route as IndexImport } from './routes/index'
 import { Route as PeopleIdImport } from './routes/people.$id'
+import { Route as PeopleIdEditImport } from './routes/people_.$id.edit'
 
 // Create/Update Routes
 
@@ -32,6 +33,12 @@ const IndexRoute = IndexImport.update({
 const PeopleIdRoute = PeopleIdImport.update({
   id: '/people/$id',
   path: '/people/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PeopleIdEditRoute = PeopleIdEditImport.update({
+  id: '/people_/$id/edit',
+  path: '/people/$id/edit',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -60,6 +67,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PeopleIdImport
       parentRoute: typeof rootRoute
     }
+    '/people_/$id/edit': {
+      id: '/people_/$id/edit'
+      path: '/people/$id/edit'
+      fullPath: '/people/$id/edit'
+      preLoaderRoute: typeof PeopleIdEditImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -69,12 +83,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/people/$id': typeof PeopleIdRoute
+  '/people/$id/edit': typeof PeopleIdEditRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/people/$id': typeof PeopleIdRoute
+  '/people/$id/edit': typeof PeopleIdEditRoute
 }
 
 export interface FileRoutesById {
@@ -82,14 +98,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/people/$id': typeof PeopleIdRoute
+  '/people_/$id/edit': typeof PeopleIdEditRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/people/$id'
+  fullPaths: '/' | '/admin' | '/people/$id' | '/people/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/people/$id'
-  id: '__root__' | '/' | '/admin' | '/people/$id'
+  to: '/' | '/admin' | '/people/$id' | '/people/$id/edit'
+  id: '__root__' | '/' | '/admin' | '/people/$id' | '/people_/$id/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -97,12 +114,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   PeopleIdRoute: typeof PeopleIdRoute
+  PeopleIdEditRoute: typeof PeopleIdEditRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   PeopleIdRoute: PeopleIdRoute,
+  PeopleIdEditRoute: PeopleIdEditRoute,
 }
 
 export const routeTree = rootRoute
@@ -117,7 +136,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/admin",
-        "/people/$id"
+        "/people/$id",
+        "/people_/$id/edit"
       ]
     },
     "/": {
@@ -128,6 +148,9 @@ export const routeTree = rootRoute
     },
     "/people/$id": {
       "filePath": "people.$id.tsx"
+    },
+    "/people_/$id/edit": {
+      "filePath": "people_.$id.edit.tsx"
     }
   }
 }
