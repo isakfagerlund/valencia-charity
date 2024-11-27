@@ -18,12 +18,12 @@ function RootComponent() {
           Home
         </Link>{' '}
         <Link
-          to="/about"
+          to="/admin"
           activeProps={{
             className: 'font-bold',
           }}
         >
-          About
+          Admin
         </Link>
       </div>
       <hr />

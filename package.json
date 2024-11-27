@@ -1,6 +1,7 @@
 {
   "name": "valencia-charity",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "turbo build",
     "deploy": "turbo deploy",
@@ -12,7 +13,7 @@
     "prettier": "^3.2.5",
     "turbo": "^2.3.1",
     "typescript": "5.5.4"
-    },
+  },
   "engines": {
     "node": ">=18"
   },
@@ -20,5 +21,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "drizzle-zod": "^0.5.1"
+  }
 }
