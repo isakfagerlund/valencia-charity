@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const fetchPeople = async () => {
-  const res = await fetch(`${apiUrl}/people`);
+  const res = await fetch(`${apiUrl}people`);
   if (!res.ok) throw new Error('Failed to fetch posts');
 
   const people = (await res.json()) as PeopleSelect[];
