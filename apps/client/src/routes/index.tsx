@@ -2,6 +2,7 @@ import { createFileRoute, Link, useLoaderData } from '@tanstack/react-router';
 import { PeopleSelect } from '../../../../models/people';
 import { Card } from '@/components/ui/card';
 import { apiUrl } from '@/lib/constants';
+import { Badge } from '@/components/ui/badge';
 
 const fetchPeople = async () => {
   const res = await fetch(`${apiUrl}people`);
@@ -21,7 +22,7 @@ function HomeComponent() {
 
   return (
     <div className="flex flex-col gap-2 p-2">
-      <h3>Welcome Home!</h3>
+      <h3 className="text-3xl py-6">Help Valencia in need</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
         {data.map((person) => (
           <Link className="w-full" key={person.id} to={`/people/${person.id}`}>
@@ -30,9 +31,13 @@ function HomeComponent() {
                 className="rounded pb-4"
                 src="https://placehold.co/600x400"
               ></img>
-              <p>{person.id}</p>
-              <p>{person.name}</p>
-              <p>{person.description}</p>
+              <div className="flex justify-between">
+                <div>
+                  <p className="font-semibold">{person.name}</p>
+                  <p>{person.description}</p>
+                </div>
+                {person.type && <Badge className="h-6">{person.type}</Badge>}
+              </div>
             </Card>
           </Link>
         ))}

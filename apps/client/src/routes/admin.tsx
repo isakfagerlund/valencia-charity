@@ -8,6 +8,7 @@ export const Route = createFileRoute('/admin')({
 function RouteComponent() {
   return (
     <div>
+      <h3 className="text-3xl py-6">Add a new person</h3>
       <NewPeopleForm />
     </div>
   );

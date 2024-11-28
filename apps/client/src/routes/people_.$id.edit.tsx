@@ -13,6 +13,7 @@ function RouteComponent() {
 
   return (
     <div>
+      <h3 className="text-3xl py-6">Edit {data.name}</h3>
       <EditPeopleForm personData={data} />
     </div>
   );
