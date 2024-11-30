@@ -37,3 +37,4 @@ yarn-error.log*
 *.pem
 
 .wrangler
+.dev.vars

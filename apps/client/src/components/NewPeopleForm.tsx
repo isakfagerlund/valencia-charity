@@ -24,6 +24,8 @@ import {
 } from '@/components/ui/select';
 import { apiUrl } from '@/lib/constants';
 import { useNavigate } from '@tanstack/react-router';
+import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
+import { toast } from 'sonner';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -44,6 +46,7 @@ const formSchema = z.object({
 });
 
 export function NewPeopleForm() {
+  const { getToken } = useKindeAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -62,20 +65,23 @@ export function NewPeopleForm() {
     setIsSubmitting(true);
 
     try {
+      const accessToken = await getToken?.();
+
       const res = await fetch(`${apiUrl}people`, {
         body: JSON.stringify(values),
         method: 'POST',
         headers: {
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
       });
       if (!res.ok) throw new Error('Failed to create');
+      navigate({ to: '/' });
     } catch (error) {
+      toast.error('Error when creating new person');
       console.error('Failed to update person', error);
     }
-
     setIsSubmitting(false);
-    navigate({ to: '/' });
   }
 
   return (

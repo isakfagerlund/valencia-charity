@@ -1,7 +1,7 @@
 import { NewPeopleForm } from '@/components/NewPeopleForm';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/admin')({
+export const Route = createFileRoute('/_auth/admin')({
   component: RouteComponent,
 });
 

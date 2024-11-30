@@ -13,6 +13,7 @@ export const Route = createFileRoute('/people/$id')({
 });
 
 function RouteComponent() {
+  const { isAuthed } = Route.useRouteContext();
   const data = useLoaderData({ from: '/people/$id' });
 
   return (
@@ -21,9 +22,11 @@ function RouteComponent() {
       <p>{data.name}</p>
       <p>{data.description}</p>
       <a href={data.wishlist_link}>Wishlist: {data.wishlist_link}</a>
-      <Link to="/people/$id/edit" params={{ id: data.id.toString() }}>
-        <Button>Edit</Button>
-      </Link>
+      {isAuthed && (
+        <Link to="/people/$id/edit" params={{ id: data.id.toString() }}>
+          <Button>Edit</Button>
+        </Link>
+      )}
     </div>
   );
 }

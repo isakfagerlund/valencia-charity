@@ -11,16 +11,30 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AdminImport } from './routes/admin'
+import { Route as LogoutImport } from './routes/logout'
+import { Route as LoginImport } from './routes/login'
+import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
 import { Route as PeopleIdImport } from './routes/people.$id'
-import { Route as PeopleIdEditImport } from './routes/people_.$id.edit'
+import { Route as AuthAdminImport } from './routes/_auth.admin'
+import { Route as AuthPeopleIdEditImport } from './routes/_auth.people_.$id.edit'
 
 // Create/Update Routes
 
-const AdminRoute = AdminImport.update({
-  id: '/admin',
-  path: '/admin',
+const LogoutRoute = LogoutImport.update({
+  id: '/logout',
+  path: '/logout',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -36,10 +50,16 @@ const PeopleIdRoute = PeopleIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const PeopleIdEditRoute = PeopleIdEditImport.update({
+const AuthAdminRoute = AuthAdminImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthPeopleIdEditRoute = AuthPeopleIdEditImport.update({
   id: '/people_/$id/edit',
   path: '/people/$id/edit',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -53,12 +73,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/admin': {
-      id: '/admin'
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/logout': {
+      id: '/logout'
+      path: '/logout'
+      fullPath: '/logout'
+      preLoaderRoute: typeof LogoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth/admin': {
+      id: '/_auth/admin'
       path: '/admin'
       fullPath: '/admin'
-      preLoaderRoute: typeof AdminImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthAdminImport
+      parentRoute: typeof AuthImport
     }
     '/people/$id': {
       id: '/people/$id'
@@ -67,61 +108,106 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PeopleIdImport
       parentRoute: typeof rootRoute
     }
-    '/people_/$id/edit': {
-      id: '/people_/$id/edit'
+    '/_auth/people_/$id/edit': {
+      id: '/_auth/people_/$id/edit'
       path: '/people/$id/edit'
       fullPath: '/people/$id/edit'
-      preLoaderRoute: typeof PeopleIdEditImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthPeopleIdEditImport
+      parentRoute: typeof AuthImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthRouteChildren {
+  AuthAdminRoute: typeof AuthAdminRoute
+  AuthPeopleIdEditRoute: typeof AuthPeopleIdEditRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthAdminRoute: AuthAdminRoute,
+  AuthPeopleIdEditRoute: AuthPeopleIdEditRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/logout': typeof LogoutRoute
+  '/admin': typeof AuthAdminRoute
   '/people/$id': typeof PeopleIdRoute
-  '/people/$id/edit': typeof PeopleIdEditRoute
+  '/people/$id/edit': typeof AuthPeopleIdEditRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/logout': typeof LogoutRoute
+  '/admin': typeof AuthAdminRoute
   '/people/$id': typeof PeopleIdRoute
-  '/people/$id/edit': typeof PeopleIdEditRoute
+  '/people/$id/edit': typeof AuthPeopleIdEditRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/logout': typeof LogoutRoute
+  '/_auth/admin': typeof AuthAdminRoute
   '/people/$id': typeof PeopleIdRoute
-  '/people_/$id/edit': typeof PeopleIdEditRoute
+  '/_auth/people_/$id/edit': typeof AuthPeopleIdEditRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/people/$id' | '/people/$id/edit'
+  fullPaths:
+    | '/'
+    | ''
+    | '/login'
+    | '/logout'
+    | '/admin'
+    | '/people/$id'
+    | '/people/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/people/$id' | '/people/$id/edit'
-  id: '__root__' | '/' | '/admin' | '/people/$id' | '/people_/$id/edit'
+  to:
+    | '/'
+    | ''
+    | '/login'
+    | '/logout'
+    | '/admin'
+    | '/people/$id'
+    | '/people/$id/edit'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/login'
+    | '/logout'
+    | '/_auth/admin'
+    | '/people/$id'
+    | '/_auth/people_/$id/edit'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  LogoutRoute: typeof LogoutRoute
   PeopleIdRoute: typeof PeopleIdRoute
-  PeopleIdEditRoute: typeof PeopleIdEditRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AuthRoute: AuthRouteWithChildren,
+  LoginRoute: LoginRoute,
+  LogoutRoute: LogoutRoute,
   PeopleIdRoute: PeopleIdRoute,
-  PeopleIdEditRoute: PeopleIdEditRoute,
 }
 
 export const routeTree = rootRoute
@@ -135,22 +221,38 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/admin",
-        "/people/$id",
-        "/people_/$id/edit"
+        "/_auth",
+        "/login",
+        "/logout",
+        "/people/$id"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/admin": {
-      "filePath": "admin.tsx"
+    "/_auth": {
+      "filePath": "_auth.tsx",
+      "children": [
+        "/_auth/admin",
+        "/_auth/people_/$id/edit"
+      ]
+    },
+    "/login": {
+      "filePath": "login.tsx"
+    },
+    "/logout": {
+      "filePath": "logout.tsx"
+    },
+    "/_auth/admin": {
+      "filePath": "_auth.admin.tsx",
+      "parent": "/_auth"
     },
     "/people/$id": {
       "filePath": "people.$id.tsx"
     },
-    "/people_/$id/edit": {
-      "filePath": "people_.$id.edit.tsx"
+    "/_auth/people_/$id/edit": {
+      "filePath": "_auth.people_.$id.edit.tsx",
+      "parent": "/_auth"
     }
   }
 }
