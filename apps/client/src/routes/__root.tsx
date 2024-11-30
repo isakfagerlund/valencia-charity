@@ -13,7 +13,7 @@ const isAuthenticated = async () => {
 };
 
 export const Route = createRootRoute({
-  beforeLoad: async ({ context }) => {
+  beforeLoad: async () => {
     try {
       const isAuthed = await isAuthenticated();
       return { isAuthed };

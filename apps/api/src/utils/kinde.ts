@@ -5,36 +5,22 @@ import {
   UserType,
 } from '@kinde-oss/kinde-typescript-sdk';
 import { Context } from 'hono';
-import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 import { createMiddleware } from 'hono/factory';
+
+let store: Record<string, unknown> = {};
 
 export const sessionManager = (c: Context): SessionManager => ({
   async getSessionItem(key: string) {
-    const result = getCookie(c, key);
-    console.log('getSessionItem', result);
-    return result;
+    return store[key];
   },
   async setSessionItem(key: string, value: unknown) {
-    const cookieOptions = {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'Lax',
-    } as const;
-    console.log('setSessionItem', value);
-
-    if (typeof value === 'string') {
-      setCookie(c, key, value, cookieOptions);
-    } else {
-      setCookie(c, key, JSON.stringify(value), cookieOptions);
-    }
+    store[key] = value;
   },
   async removeSessionItem(key: string) {
-    deleteCookie(c, key);
+    delete store[key];
   },
   async destroySession() {
-    ['id_token', 'access_token', 'user', 'refresh_token'].forEach((key) => {
-      deleteCookie(c, key);
-    });
+    store = {};
   },
 });
 

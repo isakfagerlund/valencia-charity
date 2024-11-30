@@ -46,7 +46,7 @@ authRoute.get('/callback', async (c) => {
 
   await client.handleRedirectToApp(sessionManager(c), url);
 
-  return c.redirect('/');
+  return c.redirect(c.env.KINDE_POST_LOGOUT_REDIRECT_URL);
 });
 
 authRoute.get('/me', getUser, async (c) => {
