@@ -22,7 +22,9 @@ function HomeComponent() {
 
   return (
     <div className="flex flex-col gap-2 p-2">
-      <h3 className="text-3xl py-6">Help Valencia in need</h3>
+      <div className="pb-4">
+        <img className="w-full max-w-[250px]" src="/logo.png"></img>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
         {data.map((person) => (
           <Link className="w-full" key={person.id} to={`/people/${person.id}`}>
