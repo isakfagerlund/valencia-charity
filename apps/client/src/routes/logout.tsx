@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
+import { apiUrl } from '@/lib/constants';
 
 export const Route = createFileRoute('/logout')({
   component: RouteComponent,
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/logout')({
 function RouteComponent() {
   return (
     <Button asChild>
-      <a href="/api/auth/logout">Logout!</a>
+      <a href={`${apiUrl}auth/logout`}>Logout!</a>
     </Button>
   );
 }

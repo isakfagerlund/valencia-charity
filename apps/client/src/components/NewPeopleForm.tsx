@@ -46,7 +46,6 @@ const formSchema = z.object({
 });
 
 export function NewPeopleForm() {
-  const { getToken } = useKindeAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -65,13 +64,11 @@ export function NewPeopleForm() {
     setIsSubmitting(true);
 
     try {
-      const accessToken = await getToken?.();
-
       const res = await fetch(`${apiUrl}people`, {
         body: JSON.stringify(values),
         method: 'POST',
+        credentials: 'include',
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
       });

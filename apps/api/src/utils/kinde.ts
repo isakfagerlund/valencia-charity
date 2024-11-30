@@ -6,21 +6,36 @@ import {
 } from '@kinde-oss/kinde-typescript-sdk';
 import { Context } from 'hono';
 import { createMiddleware } from 'hono/factory';
-
-let store: Record<string, unknown> = {};
+import { Bindings } from '../../index.js';
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 
 export const sessionManager = (c: Context): SessionManager => ({
   async getSessionItem(key: string) {
-    return store[key];
+    const allCookies = getCookie(c);
+    console.log('all cookies', allCookies);
+    const result = getCookie(c, key);
+    return result;
   },
   async setSessionItem(key: string, value: unknown) {
-    store[key] = value;
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Lax',
+    } as const;
+
+    if (typeof value === 'string') {
+      setCookie(c, key, value, cookieOptions);
+    } else {
+      setCookie(c, key, JSON.stringify(value));
+    }
   },
   async removeSessionItem(key: string) {
-    delete store[key];
+    deleteCookie(c, key);
   },
   async destroySession() {
-    store = {};
+    ['id_token', 'access_token', 'user', 'refresh_token'].forEach((key) => {
+      deleteCookie(c, key);
+    });
   },
 });
 
@@ -39,6 +54,7 @@ export const kindeClient = async (
     logoutRedirectURL: logoutRedirectURL,
   });
 type Env = {
+  Bindings: Bindings;
   Variables: {
     user: UserType;
   };
@@ -46,18 +62,10 @@ type Env = {
 
 export const getUser = createMiddleware<Env>(async (c, next) => {
   const client = await kindeClient(
-    // @ts-ignore
     c.env.KINDE_DOMAIN,
-    // @ts-ignore
     c.env.KINDE_CLIENT_ID,
-    // @ts-ignore
-
     c.env.KINDE_SECRET,
-    // @ts-ignore
-
     c.env.KINDE_SITE_URL,
-    // @ts-ignore
-
     c.env.KINDE_POST_LOGOUT_REDIRECT_URL
   );
 

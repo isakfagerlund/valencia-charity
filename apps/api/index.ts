@@ -15,7 +15,13 @@ export type Bindings = {
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
-app.use('/*', cors());
+app.use(
+  '/*',
+  cors({
+    origin: ['http://localhost:3001', 'valencia-charity.pages.dev'],
+    credentials: true,
+  })
+);
 
 app.route('/auth', authRoute);
 app.route('/people', peopleRoute);

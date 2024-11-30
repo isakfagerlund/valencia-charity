@@ -25,6 +25,7 @@ import {
 import { PeopleSelect } from '../../../../models/people';
 import { apiUrl } from '@/lib/constants';
 import { useNavigate } from '@tanstack/react-router';
+import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 
 const formSchema = z.object({
   id: z.number(),
@@ -67,6 +68,7 @@ export function EditPeopleForm({ personData }: { personData: PeopleSelect }) {
       const res = await fetch(`${apiUrl}people/${values.id}`, {
         body: JSON.stringify({ ...values, type: values.type ?? null }),
         method: 'PUT',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

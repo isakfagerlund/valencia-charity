@@ -1,15 +1,5 @@
-import { apiUrl } from '@/lib/constants';
+import { isAuthenticated } from '@/lib/checkIsAuthenticated';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-
-const isAuthenticated = async () => {
-  const response = await fetch(`${apiUrl}auth/me`);
-
-  if (response.status === 401 || !response.ok) {
-    return false;
-  } else {
-    return true;
-  }
-};
 
 export const Route = createFileRoute('/_auth')({
   beforeLoad: async ({ location }) => {
