@@ -18,7 +18,7 @@ const app = new Hono<{ Bindings: Bindings }>();
 app.use(
   '/*',
   cors({
-    origin: ['http://localhost:3001', 'valencia-charity.pages.dev'],
+    origin: ['http://localhost:3001', 'https://valencia-charity.pages.dev'],
     credentials: true,
   })
 );
