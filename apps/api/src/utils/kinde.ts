@@ -20,7 +20,7 @@ export const sessionManager = (c: Context): SessionManager => ({
     const cookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: 'Lax',
+      sameSite: 'None',
     } as const;
 
     if (typeof value === 'string') {
