@@ -1,15 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { apiUrl } from '@/lib/constants';
+import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 
 export const Route = createFileRoute('/logout')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { logout } = useKindeAuth();
+
   return (
-    <Button asChild>
-      <a href={`${apiUrl}auth/logout`}>Logout!</a>
-    </Button>
+    // @ts-ignore
+    <Button onClick={logout}>Logout!</Button>
   );
 }

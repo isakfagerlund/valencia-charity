@@ -7,39 +7,35 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { login, logout } = useKindeAuth();
+  const { isAuthenticated } = useKindeAuth();
 
   return (
     <>
-      <div className="p-2 flex gap-2 text-lg">
-        <Link
-          to="/"
-          activeProps={{
-            className: 'font-bold',
-          }}
-          activeOptions={{ exact: true }}
-        >
-          Home
-        </Link>
+      {isAuthenticated && (
+        <>
+          <div className="p-2 flex gap-2 text-lg">
+            <Link
+              to="/"
+              activeProps={{
+                className: 'font-bold',
+              }}
+              activeOptions={{ exact: true }}
+            >
+              Home
+            </Link>
 
-        <Link
-          to="/admin"
-          activeProps={{
-            className: 'font-bold',
-          }}
-        >
-          Admin
-        </Link>
-        {/* @ts-ignore */}
-        <button onClick={logout} type="button">
-          Logout
-        </button>
-        {/* @ts-ignore */}
-        <button onClick={login} type="button">
-          Log In
-        </button>
-      </div>
-      <hr />
+            <Link
+              to="/admin"
+              activeProps={{
+                className: 'font-bold',
+              }}
+            >
+              Admin
+            </Link>
+          </div>
+          <hr />
+        </>
+      )}
 
       <div className="p-4 xl:p-6">
         <Outlet />
