@@ -22,6 +22,7 @@
     "@libsql/client": "^0.14.0",
     "drizzle-orm": "^0.36.4",
     "hono": "^4.6.12",
+    "nanoid": "^5.0.9",
     "sst": "3.3.28"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -84,8 +84,29 @@ export function NewPeopleForm() {
     setIsSubmitting(false);
   }
 
+  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    if (event?.target?.files?.[0]) {
+      const file = event?.target?.files?.[0];
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch(`${apiUrl}upload`, {
+          body: formData,
+          method: 'POST',
+        });
+
+        if (!res.ok) throw new Error('Failed to upload');
+      } catch (error) {
+        toast.error('Error when uploading file');
+      }
+    }
+  }
+
   return (
     <Form {...form}>
+      <Input onChange={handleFileChange} type="file" accept="image/*" />
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
