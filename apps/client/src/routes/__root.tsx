@@ -1,49 +1,44 @@
 import { Toaster } from '@/components/ui/sonner';
-import { isAuthenticated } from '@/lib/checkIsAuthenticated';
+import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { Link, Outlet, createRootRoute } from '@tanstack/react-router';
 
 export const Route = createRootRoute({
-  beforeLoad: async () => {
-    try {
-      const isAuthed = await isAuthenticated();
-      return { isAuthed };
-    } catch (e) {
-      return { isAuthed: false };
-    }
-  },
   component: RootComponent,
 });
 
 function RootComponent() {
-  const { isAuthed } = Route.useRouteContext();
+  const { login, register } = useKindeAuth();
 
   return (
     <>
-      {isAuthed && (
-        <>
-          <div className="p-2 flex gap-2 text-lg">
-            <Link
-              to="/"
-              activeProps={{
-                className: 'font-bold',
-              }}
-              activeOptions={{ exact: true }}
-            >
-              Home
-            </Link>
+      <div className="p-2 flex gap-2 text-lg">
+        <Link
+          to="/"
+          activeProps={{
+            className: 'font-bold',
+          }}
+          activeOptions={{ exact: true }}
+        >
+          Home
+        </Link>
 
-            <Link
-              to="/admin"
-              activeProps={{
-                className: 'font-bold',
-              }}
-            >
-              Admin
-            </Link>
-          </div>
-          <hr />
-        </>
-      )}
+        <Link
+          to="/admin"
+          activeProps={{
+            className: 'font-bold',
+          }}
+        >
+          Admin
+        </Link>
+        <button onClick={register} type="button">
+          Register
+        </button>
+        <button onClick={login} type="button">
+          Log In
+        </button>
+      </div>
+      <hr />
+
       <div className="p-4 xl:p-6">
         <Outlet />
       </div>

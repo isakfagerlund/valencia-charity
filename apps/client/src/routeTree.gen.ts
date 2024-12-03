@@ -13,11 +13,10 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as LogoutImport } from './routes/logout'
 import { Route as LoginImport } from './routes/login'
-import { Route as AuthImport } from './routes/_auth'
+import { Route as AdminImport } from './routes/admin'
 import { Route as IndexImport } from './routes/index'
 import { Route as PeopleIdImport } from './routes/people.$id'
-import { Route as AuthAdminImport } from './routes/_auth.admin'
-import { Route as AuthPeopleIdEditImport } from './routes/_auth.people_.$id.edit'
+import { Route as PeopleIdEditImport } from './routes/people_.$id.edit'
 
 // Create/Update Routes
 
@@ -33,8 +32,9 @@ const LoginRoute = LoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthRoute = AuthImport.update({
-  id: '/_auth',
+const AdminRoute = AdminImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -50,16 +50,10 @@ const PeopleIdRoute = PeopleIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthAdminRoute = AuthAdminImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthPeopleIdEditRoute = AuthPeopleIdEditImport.update({
+const PeopleIdEditRoute = PeopleIdEditImport.update({
   id: '/people_/$id/edit',
   path: '/people/$id/edit',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -73,11 +67,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminImport
       parentRoute: typeof rootRoute
     }
     '/login': {
@@ -94,13 +88,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LogoutImport
       parentRoute: typeof rootRoute
     }
-    '/_auth/admin': {
-      id: '/_auth/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthAdminImport
-      parentRoute: typeof AuthImport
-    }
     '/people/$id': {
       id: '/people/$id'
       path: '/people/$id'
@@ -108,106 +95,84 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PeopleIdImport
       parentRoute: typeof rootRoute
     }
-    '/_auth/people_/$id/edit': {
-      id: '/_auth/people_/$id/edit'
+    '/people_/$id/edit': {
+      id: '/people_/$id/edit'
       path: '/people/$id/edit'
       fullPath: '/people/$id/edit'
-      preLoaderRoute: typeof AuthPeopleIdEditImport
-      parentRoute: typeof AuthImport
+      preLoaderRoute: typeof PeopleIdEditImport
+      parentRoute: typeof rootRoute
     }
   }
 }
 
 // Create and export the route tree
 
-interface AuthRouteChildren {
-  AuthAdminRoute: typeof AuthAdminRoute
-  AuthPeopleIdEditRoute: typeof AuthPeopleIdEditRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthAdminRoute: AuthAdminRoute,
-  AuthPeopleIdEditRoute: AuthPeopleIdEditRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
+  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/admin': typeof AuthAdminRoute
   '/people/$id': typeof PeopleIdRoute
-  '/people/$id/edit': typeof AuthPeopleIdEditRoute
+  '/people/$id/edit': typeof PeopleIdEditRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
+  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/admin': typeof AuthAdminRoute
   '/people/$id': typeof PeopleIdRoute
-  '/people/$id/edit': typeof AuthPeopleIdEditRoute
+  '/people/$id/edit': typeof PeopleIdEditRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/_auth': typeof AuthRouteWithChildren
+  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/_auth/admin': typeof AuthAdminRoute
   '/people/$id': typeof PeopleIdRoute
-  '/_auth/people_/$id/edit': typeof AuthPeopleIdEditRoute
+  '/people_/$id/edit': typeof PeopleIdEditRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | ''
+    | '/admin'
     | '/login'
     | '/logout'
-    | '/admin'
     | '/people/$id'
     | '/people/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | ''
-    | '/login'
-    | '/logout'
-    | '/admin'
-    | '/people/$id'
-    | '/people/$id/edit'
+  to: '/' | '/admin' | '/login' | '/logout' | '/people/$id' | '/people/$id/edit'
   id:
     | '__root__'
     | '/'
-    | '/_auth'
+    | '/admin'
     | '/login'
     | '/logout'
-    | '/_auth/admin'
     | '/people/$id'
-    | '/_auth/people_/$id/edit'
+    | '/people_/$id/edit'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRouteWithChildren
+  AdminRoute: typeof AdminRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   PeopleIdRoute: typeof PeopleIdRoute
+  PeopleIdEditRoute: typeof PeopleIdEditRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthRoute: AuthRouteWithChildren,
+  AdminRoute: AdminRoute,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   PeopleIdRoute: PeopleIdRoute,
+  PeopleIdEditRoute: PeopleIdEditRoute,
 }
 
 export const routeTree = rootRoute
@@ -221,21 +186,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/_auth",
+        "/admin",
         "/login",
         "/logout",
-        "/people/$id"
+        "/people/$id",
+        "/people_/$id/edit"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/_auth": {
-      "filePath": "_auth.tsx",
-      "children": [
-        "/_auth/admin",
-        "/_auth/people_/$id/edit"
-      ]
+    "/admin": {
+      "filePath": "admin.tsx"
     },
     "/login": {
       "filePath": "login.tsx"
@@ -243,16 +205,11 @@ export const routeTree = rootRoute
     "/logout": {
       "filePath": "logout.tsx"
     },
-    "/_auth/admin": {
-      "filePath": "_auth.admin.tsx",
-      "parent": "/_auth"
-    },
     "/people/$id": {
       "filePath": "people.$id.tsx"
     },
-    "/_auth/people_/$id/edit": {
-      "filePath": "_auth.people_.$id.edit.tsx",
-      "parent": "/_auth"
+    "/people_/$id/edit": {
+      "filePath": "people_.$id.edit.tsx"
     }
   }
 }
