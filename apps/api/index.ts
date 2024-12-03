@@ -24,9 +24,12 @@ app.post('/upload', async (c) => {
     const path = `images/${key}.${ext}`;
 
     try {
-      console.log(c.env.UNBOXING_PROJECT_BUCKET);
-      await c.env.UNBOXING_PROJECT_BUCKET.put(path, fileBuffer);
-      return c.json({ message: `Put ${key} successfully!` });
+      const uploadedFile = await c.env.UNBOXING_PROJECT_BUCKET.put(
+        path,
+        fileBuffer
+      );
+
+      return c.json({ key: uploadedFile?.key });
     } catch (error) {
       console.log(error);
       return c.json({ message: 'Something went wrong' });
@@ -37,21 +40,16 @@ app.post('/upload', async (c) => {
 });
 
 app.get('images/:key', async (c) => {
-  const key = c.req.param('key');
-  console.log(key);
-  const object = await c.env.UNBOXING_PROJECT_BUCKET.get(key);
+  const key = c.req.param('key'); // File key from the URL
+  const result = await c.env.UNBOXING_PROJECT_BUCKET.get(`images/${key}`);
 
-  if (object === null) {
-    return new Response('Object Not Found', { status: 404 });
+  if (result && result.httpMetadata) {
+    return c.body(result.body, 200, {
+      'content-type': result.httpMetadata.contentType || 'image/jpeg',
+    });
+  } else {
+    return c.text('Image not found', 404);
   }
-
-  const headers = new Headers();
-  object.writeHttpMetadata(headers);
-  headers.set('etag', object.httpEtag);
-
-  return new Response(object.body, {
-    headers,
-  });
 });
 
 app.route('/people', peopleRoute);

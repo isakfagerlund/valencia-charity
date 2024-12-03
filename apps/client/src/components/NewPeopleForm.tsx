@@ -48,6 +48,9 @@ const formSchema = z.object({
 export function NewPeopleForm() {
   const { getToken } = useKindeAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadedImageKey, setUploadedImageKey] = useState<
+    undefined | string
+  >();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -98,6 +101,10 @@ export function NewPeopleForm() {
         });
 
         if (!res.ok) throw new Error('Failed to upload');
+
+        const data: { key: string } = await res.json();
+
+        setUploadedImageKey(data.key);
       } catch (error) {
         toast.error('Error when uploading file');
       }
@@ -107,6 +114,9 @@ export function NewPeopleForm() {
   return (
     <Form {...form}>
       <Input onChange={handleFileChange} type="file" accept="image/*" />
+      {uploadedImageKey && (
+        <img src={`http://localhost:8787/${uploadedImageKey}`}></img>
+      )}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}

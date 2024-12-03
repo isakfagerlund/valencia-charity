@@ -4,5 +4,8 @@
     "**/*.ts",
     "**/*.tsx",
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "types": ["@cloudflare/workers-types"],
+}
 }
