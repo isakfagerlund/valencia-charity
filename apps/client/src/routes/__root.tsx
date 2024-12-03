@@ -8,6 +8,7 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   const { isAuthenticated } = useKindeAuth();
+  console.log(isAuthenticated);
 
   return (
     <>
