@@ -73,7 +73,7 @@ export function EditPeopleForm({ personData }: { personData: PeopleSelect }) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZiOmY2OmZmOmE3OjdmOmNlOjY5OmI2OjBkOjdkOjY5OjBhOmYxOmI5OmI4OjNjIiwidHlwIjoiSldUIn0.eyJhdWQiOlsiaHR0cDovL2xvY2FsaG9zdDo4Nzg3Il0sImF6cCI6IjhkMTBhZWQzMzUwYjRkZTM4YWJkNGZkOTA0NWFhMWMxIiwiZXhwIjoxNzMzMzE5MjMzLCJndHkiOlsiY2xpZW50X2NyZWRlbnRpYWxzIl0sImlhdCI6MTczMzIzMjgzMywiaXNzIjoiaHR0cHM6Ly91bmJveGluZ3Byb2plY3Qua2luZGUuY29tIiwianRpIjoiMmIyZjk3NzUtOTQ0Ni00Yjc0LWIyNjUtM2E1MzQ0OWFhMDY1Iiwic2NvcGUiOiIiLCJzY3AiOltdLCJ2IjoiMiJ9.n34-1eRa8uv_GEfyM7RH_nQ1KVbI-qfoognjOSiE580kYDuGN3clCD-d9E7wVLX_zENm7PA6PKdk7RqQpiCcnOTN_rPNQ_CmWfy8l0Nr3VSQ_ND-YJjecyE6gkTeHtge7ijae55lAuxQKRWQCBhtENxief6gb2sQbAZ6n_hbFC3U5EyVJzgaFXBmLTCYaRodhJ06lmLQajmu63aX-HtKG8iAmJIKFBDmcy_nMle9g0q6ZGqwAdMg39O36PtXMCZ9a4efgX90NZsiTZhg7UyT3tK4ffuj4NFCCToFGSmRr2EtCNQsS1y_YmINqdZR2jTXmfz2EQ1tQAoScPk7JqHphw`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       if (!res.ok) throw new Error('Failed to update');

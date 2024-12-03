@@ -7,7 +7,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { login, register } = useKindeAuth();
+  const { login, logout } = useKindeAuth();
 
   return (
     <>
@@ -30,9 +30,11 @@ function RootComponent() {
         >
           Admin
         </Link>
-        <button onClick={register} type="button">
-          Register
+        {/* @ts-ignore */}
+        <button onClick={logout} type="button">
+          Logout
         </button>
+        {/* @ts-ignore */}
         <button onClick={login} type="button">
           Log In
         </button>

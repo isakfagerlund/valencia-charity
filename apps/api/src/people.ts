@@ -5,18 +5,14 @@ import { db } from './db/db.js';
 import { zValidator } from '@hono/zod-validator';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { eq } from 'drizzle-orm';
-import { jwt, type JwtVariables } from 'hono/jwt';
 import { bearerAuth } from 'hono/bearer-auth';
-import * as jose from 'jose';
+import { verifyToken } from './helpers/verifyToken.js';
 
 const insertPeopleSchema = createInsertSchema(people);
 const selectPeopleSchema = createSelectSchema(people);
 
-type Variables = JwtVariables;
-
 export const peopleRoute = new Hono<{
   Bindings: Bindings;
-  Variables: Variables;
 }>();
 
 peopleRoute.get('/', async (c) => {
@@ -46,6 +42,9 @@ peopleRoute.get('/:id', async (c) => {
 
 peopleRoute.post(
   '/',
+  bearerAuth({
+    verifyToken,
+  }),
   zValidator('json', insertPeopleSchema, (result, c) => {
     console.log('data coming in', result.data);
     if (!result.success) {
@@ -75,22 +74,7 @@ peopleRoute.post(
 peopleRoute.put(
   '/:id',
   bearerAuth({
-    async verifyToken(token, c) {
-      const response = await fetch(
-        'https://unboxingproject.kinde.com/.well-known/jwks'
-      );
-      const { keys } = await response.json();
-
-      const rsaPublicKey = await jose.importJWK(keys[0]);
-      try {
-        const { payload } = await jose.jwtVerify(token, rsaPublicKey);
-        console.log('Token is valid:', payload);
-        return true;
-      } catch (err) {
-        console.error('Invalid token');
-        return false;
-      }
-    },
+    verifyToken,
   }),
   zValidator('json', selectPeopleSchema, (result, c) => {
     console.log('data coming in', result.data);
