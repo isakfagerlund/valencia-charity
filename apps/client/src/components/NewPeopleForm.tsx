@@ -115,7 +115,9 @@ export function NewPeopleForm() {
     <Form {...form}>
       <Input onChange={handleFileChange} type="file" accept="image/*" />
       {uploadedImageKey && (
-        <img src={`http://localhost:8787/${uploadedImageKey}`}></img>
+        <img
+          src={`${import.meta.env.VITE_BUCKET_URL}/${uploadedImageKey}`}
+        ></img>
       )}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
