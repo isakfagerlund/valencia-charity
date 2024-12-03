@@ -23,10 +23,10 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <KindeProvider
-      clientId="5581cb4d32994d64bda55a8bf027ed34"
+      clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
       domain="https://unboxingproject.kinde.com"
-      redirectUri="http://localhost:3001"
-      logoutUri="http://localhost:3001"
+      redirectUri={import.meta.env.VITE_KINDE_REDIRECT_URI}
+      logoutUri={import.meta.env.VITE_KINDE_LOGOUT_URI}
     >
       <RouterProvider router={router} />
     </KindeProvider>
