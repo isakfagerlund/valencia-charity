@@ -3,14 +3,21 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { fetchPeople } from '@/lib/fetchPeople';
 import { FileImage } from 'lucide-react';
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
+import { queryClient } from '@/main';
+
+const peopleQueryOptions = queryOptions({
+  queryKey: ['people'],
+  queryFn: () => fetchPeople(),
+});
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
-  loader: fetchPeople,
+  loader: () => queryClient.ensureQueryData(peopleQueryOptions),
 });
 
 function HomeComponent() {
-  const data = useLoaderData({ from: '/' });
+  const { data } = useSuspenseQuery(peopleQueryOptions);
 
   return (
     <div className="flex flex-col gap-2 p-2">

@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -30,6 +30,8 @@ import { toast } from 'sonner';
 import { Label } from './ui/label';
 import { Trash2 } from 'lucide-react';
 import { Card, CardContent, CardFooter } from './ui/card';
+import { useMutation } from '@tanstack/react-query';
+import { queryClient } from '@/main';
 
 const formSchema = z.object({
   id: z.number(),
@@ -59,8 +61,101 @@ export function EditPeopleForm({
   images: string[];
 }) {
   const { getToken } = useKindeAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const imageUploadRef = useRef<HTMLInputElement | null>(null);
+
+  const { mutate: onSubmitMutate, status: onSubmitStatus } = useMutation({
+    mutationKey: ['person', personData.id.toString()],
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      const accessToken = await getToken?.();
+
+      const res = await fetch(`${apiUrl}people/${values.id}`, {
+        body: JSON.stringify({ ...values, type: values.type ?? null }),
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) throw new Error('Failed to update');
+
+      return values;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ['person', personData.id.toString()],
+      });
+      navigate({ to: '/people/$id', params: { id: data.id.toString() } });
+    },
+    onError: () => {
+      toast.error('Error when submitting form');
+    },
+  });
+
+  const { mutate: onImageDeleteMutate } = useMutation({
+    mutationKey: ['person', personData.id.toString()],
+    mutationFn: async (key: string) => {
+      try {
+        const accessToken = await getToken?.();
+
+        await fetch(`${apiUrl}${key}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+      } catch (error) {
+        toast.error('Error when deleting');
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['person', personData.id.toString()],
+      });
+    },
+    onError: () => {
+      toast.error('Error when deleting image');
+    },
+  });
+
+  const { mutate: onImageUploadMutate } = useMutation({
+    mutationKey: ['person', personData.id.toString()],
+    mutationFn: async (event: ChangeEvent<HTMLInputElement>) => {
+      if (event?.target?.files?.[0]) {
+        const file = event?.target?.files?.[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+          const accessToken = await getToken?.();
+
+          const res = await fetch(`${apiUrl}images/${personData.id}`, {
+            body: formData,
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          if (!res.ok) throw new Error('Failed to upload');
+        } catch (error) {
+          toast.error('Error when uploading file');
+        }
+
+        if (imageUploadRef.current) {
+          imageUploadRef.current.value = '';
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['person', personData.id.toString()],
+      });
+    },
+    onError: () => {
+      toast.error('Error when uploading image');
+    },
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -76,66 +171,7 @@ export function EditPeopleForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('hey');
-    setIsSubmitting(true);
-    try {
-      const accessToken = await getToken?.();
-
-      const res = await fetch(`${apiUrl}people/${values.id}`, {
-        body: JSON.stringify({ ...values, type: values.type ?? null }),
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!res.ok) throw new Error('Failed to update');
-
-      navigate({ to: '/people/$id', params: { id: values.id.toString() } });
-    } catch (error) {
-      console.error('Failed to update person', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
-  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    if (event?.target?.files?.[0]) {
-      const file = event?.target?.files?.[0];
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        const accessToken = await getToken?.();
-
-        const res = await fetch(`${apiUrl}images/${personData.id}`, {
-          body: formData,
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!res.ok) throw new Error('Failed to upload');
-      } catch (error) {
-        toast.error('Error when uploading file');
-      }
-    }
-  }
-
-  async function handleDelete(key: string) {
-    try {
-      const accessToken = await getToken?.();
-
-      await fetch(`${apiUrl}${key}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-    } catch (error) {
-      toast.error('Error when deleting');
-    }
+    onSubmitMutate(values);
   }
 
   return (
@@ -155,7 +191,7 @@ export function EditPeopleForm({
                 <Button
                   variant="destructive"
                   size="icon"
-                  onClick={() => handleDelete(image)}
+                  onClick={() => onImageDeleteMutate(image)}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -181,7 +217,12 @@ export function EditPeopleForm({
 
       <div className="mb-8 flex flex-col gap-4">
         <Label>Upload images</Label>
-        <Input onChange={handleFileChange} type="file" accept="image/*" />
+        <Input
+          ref={imageUploadRef}
+          onChange={onImageUploadMutate}
+          type="file"
+          accept="image/*"
+        />
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -286,8 +327,8 @@ export function EditPeopleForm({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Updating...' : 'Update'}
+        <Button type="submit" disabled={onSubmitStatus === 'pending'}>
+          {onSubmitStatus === 'pending' ? 'Updating...' : 'Update'}
         </Button>
       </form>
     </Form>

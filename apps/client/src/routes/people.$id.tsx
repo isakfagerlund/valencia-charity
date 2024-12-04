@@ -1,15 +1,27 @@
-import { createFileRoute, Link, useLoaderData } from '@tanstack/react-router';
+import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { fetchPerson } from '@/lib/fetchPerson';
 import { Button } from '@/components/ui/button';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
+import { queryClient } from '@/main';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/people/$id')({
   component: RouteComponent,
-  loader: ({ params }) => fetchPerson(params.id),
+  loader: ({ params }) =>
+    queryClient.ensureQueryData({
+      queryKey: ['person', params.id],
+      queryFn: () => fetchPerson(params.id),
+    }),
 });
 
 function RouteComponent() {
-  const { person, images } = useLoaderData({ from: '/people/$id' });
+  const { id } = useParams({ from: '/people/$id' });
+  const {
+    data: { images, person },
+  } = useSuspenseQuery({
+    queryKey: ['person', id],
+    queryFn: () => fetchPerson(id),
+  });
   const { isAuthenticated } = useKindeAuth();
 
   return (

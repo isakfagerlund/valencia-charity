@@ -3,14 +3,21 @@ import {
   Navigate,
   redirect,
   useLoaderData,
+  useParams,
 } from '@tanstack/react-router';
 import { fetchPerson } from '@/lib/fetchPerson';
 import { EditPeopleForm } from '@/components/EditPeopleForm';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
+import { queryClient } from '@/main';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/people_/$id/edit')({
   component: RouteComponent,
-  loader: ({ params }) => fetchPerson(params.id),
+  loader: ({ params }) =>
+    queryClient.ensureQueryData({
+      queryKey: ['person', params.id],
+      queryFn: () => fetchPerson(params.id),
+    }),
 });
 
 function RouteComponent() {
@@ -21,7 +28,13 @@ function RouteComponent() {
     return <Navigate to="/" />;
   }
 
-  const { images, person } = useLoaderData({ from: '/people_/$id/edit' });
+  const { id } = useParams({ from: '/people_/$id/edit' });
+  const {
+    data: { images, person },
+  } = useSuspenseQuery({
+    queryKey: ['person', id],
+    queryFn: () => fetchPerson(id),
+  });
 
   return (
     <div>

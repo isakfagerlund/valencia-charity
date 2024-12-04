@@ -3,6 +3,8 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import './index.css';
 import { KindeProvider } from '@kinde-oss/kinde-auth-react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 // Set up a Router instance
 const router = createRouter({
@@ -19,6 +21,8 @@ declare module '@tanstack/react-router' {
 
 const rootElement = document.getElementById('app')!;
 
+export const queryClient = new QueryClient();
+
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
@@ -28,7 +32,10 @@ if (!rootElement.innerHTML) {
       redirectUri={import.meta.env.VITE_KINDE_REDIRECT_URI}
       logoutUri={import.meta.env.VITE_KINDE_LOGOUT_URI}
     >
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </KindeProvider>
   );
 }
