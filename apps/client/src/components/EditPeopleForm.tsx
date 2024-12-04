@@ -145,7 +145,7 @@ export function EditPeopleForm({
             <CardContent className="p-0 relative group">
               <div className="aspect-video relative">
                 <img
-                  src={`${import.meta.env.VITE_BUCKET_URL}/image/${image}`}
+                  src={`${import.meta.env.VITE_API_URL}image/${image}`}
                   alt={`Uploaded image ${image}`}
                   className="object-cover"
                 />
