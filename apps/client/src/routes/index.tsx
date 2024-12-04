@@ -22,7 +22,7 @@ function HomeComponent() {
   return (
     <div className="flex flex-col gap-2 p-2">
       <div className="pb-4">
-        <img className="w-full max-w-[250px]" src="/logo.png"></img>
+        <img className="w-full max-w-[200px]" src="/logo.png"></img>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4">
         {data.map((person) => (
