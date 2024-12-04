@@ -21,12 +21,12 @@ function RouteComponent() {
     return <Navigate to="/" />;
   }
 
-  const data = useLoaderData({ from: '/people_/$id/edit' });
+  const { images, person } = useLoaderData({ from: '/people_/$id/edit' });
 
   return (
     <div>
-      <h3 className="text-3xl py-6">Edit {data.name}</h3>
-      <EditPeopleForm personData={data} />
+      <h3 className="text-3xl py-6">Edit {person.name}</h3>
+      <EditPeopleForm personData={person} images={images} />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -26,6 +26,10 @@ import { PeopleSelect } from '../../../../models/people';
 import { apiUrl } from '@/lib/constants';
 import { useNavigate } from '@tanstack/react-router';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
+import { toast } from 'sonner';
+import { Label } from './ui/label';
+import { Trash2 } from 'lucide-react';
+import { Card, CardContent } from './ui/card';
 
 const formSchema = z.object({
   id: z.number(),
@@ -47,7 +51,13 @@ const formSchema = z.object({
     .optional(),
 });
 
-export function EditPeopleForm({ personData }: { personData: PeopleSelect }) {
+export function EditPeopleForm({
+  personData,
+  images,
+}: {
+  personData: PeopleSelect;
+  images: string[];
+}) {
   const { getToken } = useKindeAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -88,8 +98,77 @@ export function EditPeopleForm({ personData }: { personData: PeopleSelect }) {
     }
   }
 
+  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    if (event?.target?.files?.[0]) {
+      const file = event?.target?.files?.[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const accessToken = await getToken?.();
+
+        const res = await fetch(`${apiUrl}images/${personData.id}`, {
+          body: formData,
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (!res.ok) throw new Error('Failed to upload');
+      } catch (error) {
+        toast.error('Error when uploading file');
+      }
+    }
+  }
+
+  async function handleDelete(key: string) {
+    try {
+      const accessToken = await getToken?.();
+
+      await fetch(`${apiUrl}${key}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (error) {
+      toast.error('Error when deleting');
+    }
+  }
+
   return (
     <Form {...form}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+        {images.map((image) => (
+          <Card key={image} className="overflow-hidden">
+            <CardContent className="p-0 relative group">
+              <div className="aspect-video relative">
+                <img
+                  src={`${import.meta.env.VITE_BUCKET_URL}/image/${image}`}
+                  alt={`Uploaded image ${image}`}
+                  className="object-cover"
+                />
+              </div>
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => handleDelete(image)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="mb-8 flex flex-col gap-4">
+        <Label>Upload images</Label>
+        <Input onChange={handleFileChange} type="file" accept="image/*" />
+      </div>
+
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
