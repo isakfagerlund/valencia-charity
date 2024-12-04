@@ -8,6 +8,13 @@
       "when": 1733336757410,
       "tag": "0000_majestic_wonder_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1733345993514,
+      "tag": "0001_lean_firestar",
+      "breakpoints": true
     }
   ]
 }

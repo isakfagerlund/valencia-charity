@@ -13,17 +13,22 @@ function RouteComponent() {
   const { isAuthenticated } = useKindeAuth();
 
   return (
-    <div className="flex flex-col gap-4">
-      {images.map((image) => (
-        <img
-          key={image}
-          src={`${import.meta.env.VITE_API_URL}image/${image}`}
-        ></img>
-      ))}
-      <p>{person.id}</p>
-      <p>{person.name}</p>
-      <p>{person.description}</p>
-      <a href={person.wishlist_link}>Wishlist: {person.wishlist_link}</a>
+    <div className="flex flex-col gap-4 max-w-5xl m-auto">
+      <div>
+        {images.map((image) => (
+          <img
+            key={image}
+            src={`${import.meta.env.VITE_API_URL}image/${image}`}
+          ></img>
+        ))}
+      </div>
+      <div className="flex justify-between">
+        <div>
+          <p className="text-2xl">{person.name}</p>
+          <p>{person.description}</p>
+        </div>
+        <a href={person.wishlist_link}>Wishlist: {person.wishlist_link}</a>
+      </div>
 
       {isAuthenticated && (
         <Link to="/people/$id/edit" params={{ id: person.id.toString() }}>

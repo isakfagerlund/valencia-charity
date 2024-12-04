@@ -29,7 +29,7 @@ import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { toast } from 'sonner';
 import { Label } from './ui/label';
 import { Trash2 } from 'lucide-react';
-import { Card, CardContent } from './ui/card';
+import { Card, CardContent, CardFooter } from './ui/card';
 
 const formSchema = z.object({
   id: z.number(),
@@ -40,7 +40,7 @@ const formSchema = z.object({
     message: 'Description must be at least 10 characters.',
   }),
   video_url: z.string().url().optional().or(z.literal('')),
-  image_url: z.string().url().optional().or(z.literal('')),
+  main_image_key: z.string().optional().or(z.literal('')),
   wishlist_link: z.string().url({
     message: 'Please enter a valid URL for the wishlist.',
   }),
@@ -68,7 +68,7 @@ export function EditPeopleForm({
       id: personData.id,
       description: personData.description,
       video_url: personData.video_url ?? '',
-      image_url: personData.image_url ?? '',
+      main_image_key: personData.main_image_key ?? '',
       wishlist_link: personData.wishlist_link,
       name: personData.name,
       type: personData.type ?? undefined,
@@ -76,6 +76,7 @@ export function EditPeopleForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log('hey');
     setIsSubmitting(true);
     try {
       const accessToken = await getToken?.();
@@ -160,6 +161,20 @@ export function EditPeopleForm({
                 </Button>
               </div>
             </CardContent>
+            <CardFooter className="pt-6 flex flex-col gap-4 justify-center ">
+              <p className="font-bold">
+                {form.watch('main_image_key') === image &&
+                  'This is the current set image ✅'}
+              </p>
+              <Button
+                onClick={() => {
+                  form.setValue('main_image_key', image);
+                  form.trigger('main_image_key');
+                }}
+              >
+                Make main image
+              </Button>
+            </CardFooter>
           </Card>
         ))}
       </div>
@@ -170,6 +185,17 @@ export function EditPeopleForm({
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="main_image_key"
+          render={({ field }) => (
+            <FormItem className="hidden">
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="name"

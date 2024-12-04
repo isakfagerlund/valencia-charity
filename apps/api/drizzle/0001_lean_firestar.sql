@@ -1,0 +1,1 @@
+ALTER TABLE `people` RENAME COLUMN "image_url" TO "main_image_key";

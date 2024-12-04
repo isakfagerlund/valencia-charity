@@ -2,7 +2,7 @@ import { notFound } from '@tanstack/react-router';
 import { PeopleSelect } from '../../../../models/people';
 import { apiUrl } from './constants';
 
-const fetchImages = async (id: string) => {
+export const fetchImages = async (id: string) => {
   const res = await fetch(`${apiUrl}images/${id}`);
   if (!res.ok) throw notFound();
 
