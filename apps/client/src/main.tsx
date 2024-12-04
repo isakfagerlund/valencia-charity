@@ -9,7 +9,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 // Set up a Router instance
 const router = createRouter({
   routeTree,
-  defaultPreload: false,
 });
 
 // Register things for typesafety
