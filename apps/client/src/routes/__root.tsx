@@ -7,12 +7,12 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { isAuthenticated } = useKindeAuth();
-  console.log(isAuthenticated);
+  const { isAuthenticated, getPermission } = useKindeAuth();
+  const hasAdminRole = getPermission?.('edit.access');
 
   return (
     <>
-      {isAuthenticated && (
+      {isAuthenticated && hasAdminRole?.isGranted && (
         <>
           <div className="p-2 flex gap-2 text-lg">
             <Link

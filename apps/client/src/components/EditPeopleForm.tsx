@@ -36,6 +36,7 @@ const formSchema = z.object({
     message: 'Description must be at least 10 characters.',
   }),
   video_url: z.string().url().optional().or(z.literal('')),
+  image_url: z.string().url().optional().or(z.literal('')),
   wishlist_link: z.string().url({
     message: 'Please enter a valid URL for the wishlist.',
   }),
@@ -57,6 +58,7 @@ export function EditPeopleForm({ personData }: { personData: PeopleSelect }) {
       id: personData.id,
       description: personData.description,
       video_url: personData.video_url ?? '',
+      image_url: personData.image_url ?? '',
       wishlist_link: personData.wishlist_link,
       name: personData.name,
       type: personData.type ?? undefined,

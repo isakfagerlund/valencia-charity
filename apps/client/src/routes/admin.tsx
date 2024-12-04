@@ -7,9 +7,10 @@ export const Route = createFileRoute('/admin')({
 });
 
 function RouteComponent() {
-  const { isAuthenticated } = useKindeAuth();
+  const { isAuthenticated, getPermission } = useKindeAuth();
+  const hasAdminRole = getPermission?.('edit.access');
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !hasAdminRole?.isGranted) {
     return <Navigate to="/" />;
   }
 

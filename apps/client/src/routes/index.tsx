@@ -3,7 +3,6 @@ import { PeopleSelect } from '../../../../models/people';
 import { Card } from '@/components/ui/card';
 import { apiUrl } from '@/lib/constants';
 import { Badge } from '@/components/ui/badge';
-import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 
 const fetchPeople = async () => {
   const res = await fetch(`${apiUrl}people`);
