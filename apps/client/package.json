@@ -22,6 +22,7 @@
     "vite": "^5.4.8"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.2",
     "@hono/zod-validator": "^0.4.1",
     "@hookform/resolvers": "^3.9.1",
     "@kinde-oss/kinde-auth-react": "^4.0.4",
