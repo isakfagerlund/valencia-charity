@@ -72,14 +72,25 @@ function RouteComponent() {
         </div>
       </PhotoProvider>
       <div className="flex justify-between">
-        <div className="w-full">
+        <div className="flex flex-col w-full gap-8">
           <p className="text-2xl">{person.name}</p>
           <div className="flex flex-col md:flex-row gap-8">
             <p className="w-full md:w-2/3">{person.description}</p>
-            <Button className="w-1/3">
-              <a href={person.wishlist_link}>Wishlist Link</a>
+            <Button className="bg-yellow-400 text-black w-auto md:w-1/3 hover:bg-yellow-400/70">
+              <a href={person.wishlist_link}>Lista de necesidades</a>
             </Button>
           </div>
+          {person.video_url && (
+            <div className="flex">
+              <iframe
+                width="560"
+                height="315"
+                src={person.video_url}
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              ></iframe>
+            </div>
+          )}
         </div>
       </div>
 
