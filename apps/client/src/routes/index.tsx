@@ -20,7 +20,7 @@ function HomeComponent() {
   const { data } = useSuspenseQuery(peopleQueryOptions);
 
   return (
-    <div className="flex flex-col gap-2 p-2">
+    <div className="flex flex-col gap-2">
       <div className="pb-4">
         <img className="w-full max-w-[200px]" src="/logo.png"></img>
       </div>
@@ -43,7 +43,6 @@ function HomeComponent() {
               <div className="flex pt-4 justify-between">
                 <div>
                   <p className="font-semibold">{person.name}</p>
-                  <p>{person.description}</p>
                 </div>
                 {person.type && <Badge className="h-6">{person.type}</Badge>}
               </div>

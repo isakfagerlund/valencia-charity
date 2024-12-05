@@ -184,7 +184,7 @@ export function EditPeopleForm({
                 <img
                   src={`${import.meta.env.VITE_API_URL}image/${image}`}
                   alt={`Uploaded image ${image}`}
-                  className="object-cover"
+                  className="object-cover aspect-video"
                 />
               </div>
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
