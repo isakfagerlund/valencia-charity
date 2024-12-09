@@ -107,4 +107,36 @@ peopleRoute.put(
   }
 );
 
-peopleRoute.delete('/', async (c) => c.text('DELETE /'));
+peopleRoute.delete(
+  '/:id',
+  bearerAuth({
+    verifyToken,
+  }),
+  async (c) => {
+    const id = parseInt(c.req.param('id'));
+    const foundPerson = await db({
+      token: c.env.TURSO_TOKEN,
+      url: c.env.TURSO_URL,
+    }).query.people.findFirst({ where: eq(people.id, id) });
+
+    try {
+      if (foundPerson) {
+        await db({
+          token: c.env.TURSO_TOKEN,
+          url: c.env.TURSO_URL,
+        })
+          .delete(people)
+          .where(eq(people.id, id));
+      } else {
+        throw new Error('Could not find the person');
+      }
+
+      return c.json({
+        success: true,
+        message: `Succefully deleted person`,
+      });
+    } catch (error) {
+      c.json({ error: 'Could not find person or something went wrong' }, 401);
+    }
+  }
+);

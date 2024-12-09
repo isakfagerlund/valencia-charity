@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -48,9 +48,6 @@ const formSchema = z.object({
 export function NewPeopleForm() {
   const { getToken } = useKindeAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploadedImageKey, setUploadedImageKey] = useState<
-    undefined | string
-  >();
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -87,38 +84,8 @@ export function NewPeopleForm() {
     setIsSubmitting(false);
   }
 
-  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    if (event?.target?.files?.[0]) {
-      const file = event?.target?.files?.[0];
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        const res = await fetch(`${apiUrl}upload`, {
-          body: formData,
-          method: 'POST',
-        });
-
-        if (!res.ok) throw new Error('Failed to upload');
-
-        const data: { key: string } = await res.json();
-
-        setUploadedImageKey(data.key);
-      } catch (error) {
-        toast.error('Error when uploading file');
-      }
-    }
-  }
-
   return (
     <Form {...form}>
-      <Input onChange={handleFileChange} type="file" accept="image/*" />
-      {uploadedImageKey && (
-        <img
-          src={`${import.meta.env.VITE_BUCKET_URL}/${uploadedImageKey}`}
-        ></img>
-      )}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
