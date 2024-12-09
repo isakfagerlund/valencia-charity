@@ -32,6 +32,7 @@ import { Trash2 } from 'lucide-react';
 import { Card, CardContent, CardFooter } from './ui/card';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@/main';
+import { resizeImage } from '@/lib/reziseImage';
 
 const formSchema = z.object({
   id: z.number(),
@@ -81,11 +82,10 @@ export function EditPeopleForm({
 
       return values;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['person', personData.id.toString()],
       });
-      navigate({ to: '/people/$id', params: { id: data.id.toString() } });
     },
     onError: () => {
       toast.error('Error when submitting form');
@@ -109,6 +109,18 @@ export function EditPeopleForm({
       }
     },
     onSuccess: () => {
+      if (images.length === 1) {
+        onSubmitMutate({
+          description: personData.description,
+          id: personData.id,
+          name: personData.name,
+          wishlist_link: personData.wishlist_link,
+          main_image_key: '',
+          type: personData.type ?? undefined,
+          video_url: personData.video_url ?? undefined,
+        });
+      }
+
       queryClient.invalidateQueries({
         queryKey: ['person', personData.id.toString()],
       });
@@ -123,8 +135,9 @@ export function EditPeopleForm({
     mutationFn: async (event: ChangeEvent<HTMLInputElement>) => {
       if (event?.target?.files?.[0]) {
         const file = event?.target?.files?.[0];
+        const rezisedFile = await resizeImage(file);
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', rezisedFile);
 
         try {
           const accessToken = await getToken?.();
@@ -138,6 +151,7 @@ export function EditPeopleForm({
           });
 
           if (!res.ok) throw new Error('Failed to upload');
+          return (await res.json()) as { key: string };
         } catch (error) {
           toast.error('Error when uploading file');
         }
@@ -147,7 +161,19 @@ export function EditPeopleForm({
         }
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (images.length === 0) {
+        console.log('Set as main image');
+        onSubmitMutate({
+          description: personData.description,
+          id: personData.id,
+          name: personData.name,
+          wishlist_link: personData.wishlist_link,
+          main_image_key: data?.key,
+          type: personData.type ?? undefined,
+          video_url: personData.video_url ?? undefined,
+        });
+      }
       queryClient.invalidateQueries({
         queryKey: ['person', personData.id.toString()],
       });
@@ -172,6 +198,7 @@ export function EditPeopleForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     onSubmitMutate(values);
+    navigate({ to: '/people/$id', params: { id: personData.id.toString() } });
   }
 
   return (

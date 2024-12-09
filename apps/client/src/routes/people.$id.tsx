@@ -41,35 +41,40 @@ function RouteComponent() {
         </Button>
       </div>
       <PhotoProvider>
-        <div>
-          <PhotoView
-            src={`${import.meta.env.VITE_API_URL}image/${person.main_image_key}`}
-          >
-            <img
-              className="rounded aspect-video object-cover w-full"
+        {person.main_image_key && (
+          <div>
+            <PhotoView
               src={`${import.meta.env.VITE_API_URL}image/${person.main_image_key}`}
-            ></img>
-          </PhotoView>
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          {images.map((image) => {
-            if (image === person.main_image_key) {
-              return null;
-            }
+            >
+              <img
+                className="rounded aspect-video object-cover w-full"
+                src={`${import.meta.env.VITE_API_URL}image/${person.main_image_key}`}
+              ></img>
+            </PhotoView>
+          </div>
+        )}
 
-            return (
-              <PhotoView
-                key={image}
-                src={`${import.meta.env.VITE_API_URL}image/${image}`}
-              >
-                <img
-                  className="rounded 1/3 aspect-video object-cover"
+        {images && (
+          <div className="grid grid-cols-3 gap-4">
+            {images.map((image) => {
+              if (image === person.main_image_key) {
+                return null;
+              }
+
+              return (
+                <PhotoView
+                  key={image}
                   src={`${import.meta.env.VITE_API_URL}image/${image}`}
-                ></img>
-              </PhotoView>
-            );
-          })}
-        </div>
+                >
+                  <img
+                    className="rounded 1/3 aspect-video object-cover"
+                    src={`${import.meta.env.VITE_API_URL}image/${image}`}
+                  ></img>
+                </PhotoView>
+              );
+            })}
+          </div>
+        )}
       </PhotoProvider>
       <div className="flex justify-between">
         <div className="flex flex-col w-full gap-8">
