@@ -20,7 +20,9 @@ function HomeComponent() {
   return (
     <div className="flex flex-col gap-2">
       <div className="pb-4">
-        <img className="w-full max-w-[200px]" src="/logo.png"></img>
+        <a href="https://proyectounboxing.es/">
+          <img className="w-full max-w-[200px]" src="/logo.png"></img>
+        </a>
       </div>
       <PeopleList data={data} />
     </div>
