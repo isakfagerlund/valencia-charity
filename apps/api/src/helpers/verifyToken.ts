@@ -4,7 +4,7 @@ import { jwtDecoder } from '@kinde/jwt-decoder';
 export async function verifyToken(token: string) {
   const validationResult: jwtValidationResponse = await validateToken({
     token: token,
-    domain: 'https://unboxingproject.kinde.com',
+    domain: 'https://auth.proyectounboxing.es/',
   });
 
   const decodedToken: {
