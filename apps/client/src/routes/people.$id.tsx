@@ -1,6 +1,7 @@
 import {
   createFileRoute,
   Link,
+  useNavigate,
   useParams,
   useRouter,
 } from '@tanstack/react-router';
@@ -23,6 +24,7 @@ export const Route = createFileRoute('/people/$id')({
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
   const { id } = useParams({ from: '/people/$id' });
   const {
     data: { images, person },
@@ -36,7 +38,11 @@ function RouteComponent() {
   return (
     <div className="flex flex-col gap-4 max-w-5xl m-auto">
       <div>
-        <Button size="icon" variant="ghost" onClick={() => history.go(-1)}>
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => navigate({ to: '/' })}
+        >
           <ChevronLeft />
         </Button>
       </div>
