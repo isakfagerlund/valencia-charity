@@ -5,6 +5,7 @@ import './index.css';
 import { KindeProvider } from '@kinde-oss/kinde-auth-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import './i18n';
 
 // Set up a Router instance
 const router = createRouter({

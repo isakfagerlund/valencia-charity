@@ -33,7 +33,6 @@ function RouteComponent() {
     queryFn: () => fetchPerson(id),
   });
   const { isAuthenticated } = useKindeAuth();
-  const { history } = useRouter();
 
   return (
     <div className="flex flex-col gap-4 max-w-5xl m-auto">

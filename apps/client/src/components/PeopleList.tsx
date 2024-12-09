@@ -4,10 +4,12 @@ import { PeopleSelect } from '../../../../models/people';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { PersonCard } from './PersonCard';
+import { useTranslation } from 'react-i18next';
 
 const filterTypes = ['children', 'elderly', 'special_needs'] as const;
 
 export const PeopleList = ({ data }: { data: PeopleSelect[] }) => {
+  const { t } = useTranslation();
   const [parent] = useAutoAnimate({ duration: 50 });
   const [filter, setFilter] = useState<
     'children' | 'elderly' | 'special_needs' | undefined
@@ -49,7 +51,7 @@ export const PeopleList = ({ data }: { data: PeopleSelect[] }) => {
               }}
               key={filterType}
             >
-              {filterType}
+              {t(filterType)}
             </Button>
           );
         })}
@@ -63,7 +65,7 @@ export const PeopleList = ({ data }: { data: PeopleSelect[] }) => {
         ))}
         {filteredData.length === 0 && (
           <div>
-            <p>Sorry no match</p>
+            <p>{t('no_match')}</p>
           </div>
         )}
       </div>
