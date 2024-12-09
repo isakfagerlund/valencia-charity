@@ -27,7 +27,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <KindeProvider
       clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
-      domain="https://unboxingproject.kinde.com"
+      domain="https://auth.proyectounboxing.es"
       redirectUri={import.meta.env.VITE_KINDE_REDIRECT_URI}
       logoutUri={import.meta.env.VITE_KINDE_LOGOUT_URI}
     >
