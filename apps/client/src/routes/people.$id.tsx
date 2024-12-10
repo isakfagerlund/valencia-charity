@@ -86,8 +86,13 @@ function RouteComponent() {
           <p className="text-2xl">{person.name}</p>
           <div className="flex flex-col md:flex-row gap-8">
             <p className="w-full md:w-2/3">{person.description}</p>
-            <Button className="bg-brand text-black w-auto md:w-1/3 hover:bg-yellow-400/70">
-              <a href={person.wishlist_link}>Lista de necesidades</a>
+            <Button
+              asChild
+              className="bg-brand text-black w-auto md:w-1/3 hover:bg-yellow-400/70"
+            >
+              <a href={person.wishlist_link} target="_blank">
+                Lista de necesidades
+              </a>
             </Button>
           </div>
           {person.video_url && (
