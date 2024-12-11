@@ -9,7 +9,7 @@ export const PersonCard = ({ person }: { person: PeopleSelect }) => {
   const { t } = useTranslation();
 
   return (
-    <Link className="w-full" to={`/people/${person.id}`}>
+    <Link viewTransition className="w-full" to={`/people/${person.id}`}>
       <Card className="p-4">
         {person.main_image_key ? (
           <img

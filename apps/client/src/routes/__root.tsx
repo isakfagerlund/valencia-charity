@@ -21,6 +21,7 @@ function RootComponent() {
                 className: 'font-bold',
               }}
               activeOptions={{ exact: true }}
+              viewTransition
             >
               Home
             </Link>
@@ -30,6 +31,7 @@ function RootComponent() {
               activeProps={{
                 className: 'font-bold',
               }}
+              viewTransition
             >
               Admin
             </Link>
