@@ -2,7 +2,7 @@ import pica from "pica";
 
 const picaInstance = pica();
 
-export const resizeImage = async (file: File) => {
+export const resizeImage = async (file: File): Promise<File> => {
   const img = new Image();
   img.src = URL.createObjectURL(file);
 
@@ -20,5 +20,6 @@ export const resizeImage = async (file: File) => {
     .then((blob) => {
       return blob;
     });
-  return blob;
+
+  return new File([blob], file.name, { type: "image/jpeg" });
 };
